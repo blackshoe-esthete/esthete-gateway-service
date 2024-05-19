@@ -1,5 +1,6 @@
 package com.blackshoe.esthete.filter;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,12 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -60,6 +61,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
             try {
                 String id = getId(jwt);
+                //Authorization Header를 유저 id 값으로 변경
                 exchange.getRequest().mutate().headers(h -> {h.replace(HttpHeaders.AUTHORIZATION, Collections.singletonList(id));});
             } catch (Exception e) {
                 return onError(exchange, "Error occurred while setting user id from token", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,6 +73,15 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
     private String getId(String jwt) {
         try {
+
+            Claims claims = Jwts.parser()
+                    .setSigningKey(SECRET_KEY.getBytes())
+                    .parseClaimsJws(jwt)
+                    .getBody();
+
+            String userId = claims.get("userId", String.class);
+            return userId;
+            /*
             String id = Jwts.parser()
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(jwt)
@@ -78,6 +89,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                     .get("Id", String.class);
 
             return id;
+             */
         }
         catch (Exception e) {
             log.error(e.getMessage());

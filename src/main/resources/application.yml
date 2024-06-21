@@ -8,9 +8,9 @@ spring:
     name: gateway-service
   cloud:
     gateway:
-      globalcors:
-        default-filters:
-          - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+#      globalcors:
+#        default-filters:
+#          - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
 #        cors-configurations:
 #          '[/**]':
 #            allowedOrigins:
@@ -32,20 +32,12 @@ spring:
           filters:
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
 
-
         - id: filter-service
           uri: lb://FILTER-SERVICE
           predicates:
             - Path=/filter-service/**
           filters:
             - RewritePath=/filter-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-            - name: Cors
-              args:
-                allowedOrigins: "http://localhost:3000"
-                allowCredentials: true
-                allowedHeaders: "*"
-                allowedMethods: "PUT, GET, POST, DELETE, OPTIONS"
 
         - id: exhibition-service
           uri: lb://EXHIBITION-SERVICE
@@ -53,13 +45,6 @@ spring:
             - Path=/exhibition-service/**
           filters:
             - RewritePath=/exhibition-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-            - name: Cors
-              args:
-                allowedOrigins: "http://localhost:3000"
-                allowCredentials: true
-                allowedHeaders: "*"
-                allowedMethods: "PUT, GET, POST, DELETE, OPTIONS"
 
         - id: report-service
           uri: lb://REPORT-SERVICE
@@ -67,13 +52,7 @@ spring:
             - Path=/report-service/**
           filters:
             - RewritePath=/report-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-            - name: Cors
-              args:
-                allowedOrigins: "http://localhost:3000"
-                allowCredentials: true
-                allowedHeaders: "*"
-                allowedMethods: "PUT, GET, POST, DELETE, OPTIONS"
+
 eureka:
   client:
     service-url:

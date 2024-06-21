@@ -49,7 +49,8 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             }
 
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
+                //return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
+                return chain.filter(exchange);
             }
 
             String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
@@ -60,11 +61,11 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             }
 
             try {
-                String id = getId(jwt);
+                //String id = getId(jwt);
                 //Authorization Header를 유저 id 값으로 변경
-                exchange.getRequest().mutate().headers(h -> {h.replace(HttpHeaders.AUTHORIZATION, Collections.singletonList(id));});
+                //exchange.getRequest().mutate().headers(h -> {h.replace(HttpHeaders.AUTHORIZATION, Collections.singletonList(id));});
             } catch (Exception e) {
-                return onError(exchange, "Error occurred while setting user id from token", HttpStatus.INTERNAL_SERVER_ERROR);
+                //return onError(exchange, "Error occurred while setting user id from token", HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
             return chain.filter(exchange);

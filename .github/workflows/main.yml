@@ -1,9 +1,13 @@
 name: cicd for gateway-service
 on:
   push:
-    branches: [ main, test ]
+    branches:
+        - main
+        - test
   pull_request:
-    branches: [ main, test ]
+    branches:
+        - main
+        - test
   workflow_dispatch:
 
 env:
@@ -81,9 +85,9 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           envs: GITHUB_SHA,NEXT_GATEWAY_VER
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.NEXT_GATEWAY_VER }}
             sudo docker stop ${{ env.IMAGE_NAME }} || true
             sudo docker rm ${{ env.IMAGE_NAME }} || true
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.NEXT_GATEWAY_VER }}
             sudo docker run -d --name ${{ env.IMAGE_NAME }} --network esthete-network -p 80:80 \
                 -e INSTANCE_HOST='${{ secrets.HOST_TEST_DNS }}' \
                 -e EUREKA_HOST='${{ secrets.EUREKA_HOST }}' \

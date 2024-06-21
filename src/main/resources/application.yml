@@ -11,19 +11,19 @@ spring:
       globalcors:
         default-filters:
           - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
-        cors-configurations:
-          '[/**]':
-            allowedOrigins:
-              - 'http://localhost:3000'
-              # - ${FRONTEND_HOST}
-            allow-credentials: true
-            allowedHeaders: '*'
-            allowedMethods:
-              - PUT
-              - GET
-              - POST
-              - DELETE
-              - OPTIONS
+#        cors-configurations:
+#          '[/**]':
+#            allowedOrigins:
+#              - 'http://localhost:3000'
+#              # - ${FRONTEND_HOST}
+#            allow-credentials: true
+#            allowedHeaders: '*'
+#            allowedMethods:
+#              - PUT
+#              - GET
+#              - POST
+#              - DELETE
+#              - OPTIONS
       routes:
         - id: user-service
           uri: lb://USER-SERVICE
@@ -31,7 +31,7 @@ spring:
             - Path=/user-service/**
           filters:
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
+
 
         - id: filter-service
           uri: lb://FILTER-SERVICE
@@ -40,6 +40,12 @@ spring:
           filters:
             - RewritePath=/filter-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+            - name: Cors
+              args:
+                allowedOrigins: "http://localhost:3000"
+                allowCredentials: true
+                allowedHeaders: "*"
+                allowedMethods: "PUT, GET, POST, DELETE, OPTIONS"
 
         - id: exhibition-service
           uri: lb://EXHIBITION-SERVICE
@@ -48,6 +54,12 @@ spring:
           filters:
             - RewritePath=/exhibition-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+            - name: Cors
+              args:
+                allowedOrigins: "http://localhost:3000"
+                allowCredentials: true
+                allowedHeaders: "*"
+                allowedMethods: "PUT, GET, POST, DELETE, OPTIONS"
 
         - id: report-service
           uri: lb://REPORT-SERVICE
@@ -56,6 +68,12 @@ spring:
           filters:
             - RewritePath=/report-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+            - name: Cors
+              args:
+                allowedOrigins: "http://localhost:3000"
+                allowCredentials: true
+                allowedHeaders: "*"
+                allowedMethods: "PUT, GET, POST, DELETE, OPTIONS"
 eureka:
   client:
     service-url:

@@ -7,7 +7,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import jakarta.annotation.PostConstruct;
 import java.util.TimeZone;
 
-@EnableDiscoveryClient
 @SpringBootApplication
 public class EstheteGatewayServiceApplication {
 	@PostConstruct

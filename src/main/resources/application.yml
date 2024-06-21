@@ -15,7 +15,7 @@ spring:
           '[/**]':
             allowedOrigins:
               - 'http://localhost:3000'
-              #- ${FRONTEND_HOST}
+              # - ${FRONTEND_HOST}
             allow-credentials: true
             allowedHeaders: '*'
             allowedMethods:
@@ -30,6 +30,7 @@ spring:
           predicates:
             - Path=/user-service/**
           filters:
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
 
         - id: filter-service
@@ -37,8 +38,24 @@ spring:
           predicates:
             - Path=/filter-service/**
           filters:
+            - RewritePath=/filter-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
 
+        - id: exhibition-service
+          uri: lb://EXHIBITION-SERVICE
+          predicates:
+            - Path=/exhibition-service/**
+          filters:
+            - RewritePath=/exhibition-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: report-service
+          uri: lb://REPORT-SERVICE
+          predicates:
+            - Path=/report-service/**
+          filters:
+            - RewritePath=/report-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
 eureka:
   client:
     service-url:
@@ -47,7 +64,7 @@ eureka:
     fetch-registry: true
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-    hostname: ${INSTANCE_HOST}
+    hostname: ${INSTANCE_HOST} # 지금은 instance public dns임
 
 management:
   endpoint:

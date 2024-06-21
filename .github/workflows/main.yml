@@ -1,9 +1,9 @@
 name: cicd for gateway-service
 on:
   push:
-    branches: [ main ]
+    branches: [ main, test ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, test ]
   workflow_dispatch:
 
 env:
@@ -86,7 +86,7 @@ jobs:
             sudo docker rm ${{ env.IMAGE_NAME }} || true
             sudo docker run -d --name ${{ env.IMAGE_NAME }} --network esthete-network -p 80:80 \
                 -e INSTANCE_HOST='${{ secrets.HOST_TEST_DNS }}' \
-                -e EUREKA_HOST='${{ secrets.HOST_TEST_DNS }}' \
+                -e EUREKA_HOST='${{ secrets.EUREKA_HOST }}' \
                 -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
                 ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.NEXT_GATEWAY_VER }}
             sleep 15
